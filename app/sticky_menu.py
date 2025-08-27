@@ -1,14 +1,20 @@
-from nicegui import ui, context
+from nicegui import ui
 
 class StickyMenu:
     def __init__(self):
-        with ui.page_sticky(x_offset=18, y_offset=18):
-            with ui.button(icon='settings').props('flat color=accent'):
-                with ui.menu() as menu:
-                    current_route = context.client.page.path
-                    if current_route == '/':
-                        ui.menu_item('Stats', lambda: ui.navigate.to('/stats'))
-                    elif current_route == '/stats':
-                        ui.menu_item('Home', lambda: ui.navigate.to('/'))
-                    ui.separator()
-                    ui.menu_item('Close', menu.close)
+        with ui.page_sticky(x_offset=25, y_offset=25):
+            btn = ui.button(icon='settings').props('outline round').classes('shadow-lg')
+            with ui.menu() \
+                .props(' transition-show="jump-down" transition-hide="jump-up"') \
+                .style('width:14rem') \
+                .classes("bg-base-200 rounded-box") as menu:
+
+                # MENU ITEMS
+                ui.menu_item('Home', on_click=lambda: ui.navigate.to('/'))
+                ui.menu_item('Stats', on_click=lambda: ui.navigate.to('/stats'))
+
+            # link button and menu explicitly
+            btn.on('click', lambda: menu.open())
+
+            # Force pre‑mount: open once immediately, then close
+            ui.timer(0.05, lambda: (menu.open(), ui.timer(0.05, lambda: menu.close(), once=True)), once=True)

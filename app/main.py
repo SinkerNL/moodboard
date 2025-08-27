@@ -1,50 +1,18 @@
 from nicegui import ui
 from moodbutton import MoodButton, MoodStats
 from sticky_menu import StickyMenu
-import plotly.graph_objs as go
-
-def plot_stats(stats):
-    mood_map = {'sad': 0, 'neutral': 1, 'happy': 2}
-    mood_emojis = {0: '😫', 1: '🤔', 2: '😊'}
-    times = [entry['datetime'] for entry in stats]
-    values = [mood_map.get(entry['mood'], None) for entry in stats]
-    emojis = [mood_emojis.get(val, '') for val in values]
-
-    return {
-        'data': [{
-            'type': 'scatter',
-            'x': times,
-            'y': values,
-            'mode': 'text',
-            'text': emojis,
-            'textposition': 'middle center',
-            'textfont': {'size': 24},
-            'showlegend': False,
-            'marker': {'opacity': 0},
-        }],
-        'layout': {
-            'yaxis': {
-                'tickmode': 'array',
-                'tickvals': [0, 1, 2, 3],
-                'ticktext': ['Sad', 'Neutral', 'Happy', ''],
-            },
-            'margin': {'l': 50, 'r': 20, 't': 50, 'b': 40},  # more left and top margin
-            'autosize': True,
-            'height': 400,  # increased height
-            'plot_bgcolor': 'rgba(0,0,0,0)',
-            'paper_bgcolor': 'rgba(0,0,0,0)',
-        },
-        'config': {
-            'displayModeBar': False
-        }
-    }
+from plot import plot_stats
 
 @ui.page('/')
 async def index():
-    with ui.row().classes('w-full flex justify-center items-center gap-4'):
-        MoodButton('😊').props('flat size="xl"').style('color: #FF0080')
-        MoodButton('🤔').props('flat size="xl"').style('color: #FF0080')
-        MoodButton('😫').props('flat size="xl"').style('color: #FF0080')
+    with ui.column().classes('w-full h-screen justify-center items-center gap-8'):
+        ui.label('What is your mood today?') \
+            .classes('mx-auto text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500 text-center mb-8')
+
+        with ui.row().classes('w-full flex justify-center items-center gap-4'):
+            MoodButton('😊').props('flat').classes('text-7xl').style('color: #FF0080')
+            MoodButton('🤔').props('flat').classes('text-7xl').style('color: #FF0080')
+            MoodButton('😫').props('flat').classes('text-7xl').style('color: #FF0080')
     StickyMenu()
 
 @ui.page('/stats')
@@ -57,7 +25,3 @@ async def stats_page():
     StickyMenu()
 
 ui.run(title='Mood Board')
-
-# dark_mode=True 
-
-# on_air=True, 
