@@ -56,6 +56,8 @@ async def stats_page():
         ui.label('No stats yet.')
     StickyMenu()
 
-ui.run(title='Mood Board', dark=True)
+ui.run(title='Mood Board')
+
+# dark_mode=True 
 
 # on_air=True, 
